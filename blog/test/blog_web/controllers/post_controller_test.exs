@@ -4,7 +4,11 @@ defmodule BlogWeb.PostControllerTest do
   import Blog.PostsFixtures
 
   @create_attrs %{content: "some content", subtitle: "some subtitle", title: "some title"}
-  @update_attrs %{content: "some updated content", subtitle: "some updated subtitle", title: "some updated title"}
+  @update_attrs %{
+    content: "some updated content",
+    subtitle: "some updated subtitle",
+    title: "some updated title"
+  }
   @invalid_attrs %{content: nil, subtitle: nil, title: nil}
 
   describe "index" do
@@ -74,6 +78,15 @@ defmodule BlogWeb.PostControllerTest do
       assert_error_sent 404, fn ->
         get(conn, ~p"/posts/#{post}")
       end
+    end
+  end
+
+  describe "search post with title" do
+    setup [:create_post]
+
+    test "Search post with partially matching title", %{conn: conn, post: post} do
+      conn = get(conn, ~p"/posts/search")
+      assert html_response(conn, 200) =~ "Listing Posts"
     end
   end
 

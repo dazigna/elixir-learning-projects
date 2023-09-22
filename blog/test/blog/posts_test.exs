@@ -35,7 +35,12 @@ defmodule Blog.PostsTest do
 
     test "update_post/2 with valid data updates the post" do
       post = post_fixture()
-      update_attrs = %{content: "some updated content", subtitle: "some updated subtitle", title: "some updated title"}
+
+      update_attrs = %{
+        content: "some updated content",
+        subtitle: "some updated subtitle",
+        title: "some updated title"
+      }
 
       assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
       assert post.content == "some updated content"
@@ -58,6 +63,20 @@ defmodule Blog.PostsTest do
     test "change_post/1 returns a post changeset" do
       post = post_fixture()
       assert %Ecto.Changeset{} = Posts.change_post(post)
+    end
+
+    test "search_post/1 return a list of post with (partially) matching title" do
+      valid_attrs = %{title: "some title"}
+      post = post_fixture(valid_attrs)
+      assert Posts.search_post("some title") == [post]
+      assert Posts.search_post("some Title") == [post]
+      assert Posts.search_post("title") == [post]
+    end
+
+    test "search_post/1 return an empty list when title is not matching" do
+      valid_attrs = %{title: "some title"}
+      post = post_fixture(valid_attrs)
+      assert Posts.search_post("hi") == []
     end
   end
 end

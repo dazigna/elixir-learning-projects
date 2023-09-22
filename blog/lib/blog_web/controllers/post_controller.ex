@@ -59,4 +59,13 @@ defmodule BlogWeb.PostController do
     |> put_flash(:info, "Post deleted successfully.")
     |> redirect(to: ~p"/posts")
   end
+
+  def search(conn, %{"search_query" => search} = _params) do
+    posts = Posts.search_post(search)
+    render(conn, :search, posts: posts)
+  end
+
+  def search(conn, _params) do
+    render(conn, :search, posts: [])
+  end
 end

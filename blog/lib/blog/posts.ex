@@ -101,4 +101,22 @@ defmodule Blog.Posts do
   def change_post(%Post{} = post, attrs \\ %{}) do
     Post.changeset(post, attrs)
   end
+
+  @doc """
+  Returns a list of matching post based on the title search query
+
+  ##Examples
+      iex> search_post("title")
+      {:ok, [%Post{}, ...]}
+
+      iex> search_post("wrong title")
+      {:error, []}
+  """
+  def search_post(title) do
+    search = "%#{title}%"
+
+    Post
+    |> where([p], ilike(p.title, ^search))
+    |> Repo.all()
+  end
 end
